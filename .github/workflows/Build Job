@@ -1,0 +1,57 @@
+# .github/workflows/demo-workflow.yml
+
+# Name of the workflow as it appears in the Actions tab
+name: GitHub Actions Demo
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+  # Triggers the workflow on push events but only for the main branch
+  push:
+    branches: [ main ]
+    # Note: GitHub automatically skips builds if commit message contains [skip ci]
+
+  # Triggers the workflow on pull request events but only for the main branch
+  pull_request:
+    branches: [ main ]
+
+  # Note: The original request mentioned path filters, but the testing steps
+  # involve modifying README.md to trigger the workflow. Therefore, path filters
+  # that exclude README.md are omitted here to align with the testing procedure.
+  # If you want to exclude README.md changes, uncomment the following:
+  # paths-ignore:
+  #   - 'README.md'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "Build"
+  Build:
+    # The type of runner that the job will run on
+    # 'ubuntu-latest' refers to the latest stable Ubuntu image provided by GitHub
+    # Check documentation for specifics: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check out repository code
+        uses: actions/checkout@v4 # Specifies the version of the checkout action
+
+      # Runs a single command using the runners shell
+      - name: Output event name
+        run: echo "Workflow triggered by event: ${{ github.event_name }}"
+
+      # Runs another command
+      # github.ref is the branch or tag ref that triggered the workflow run.
+      # For pull requests, this is refs/pull/<pr_number>/merge
+      # For pushes, this is refs/heads/<branch_name> or refs/tags/<tag_name>
+      - name: Output branch name
+        run: echo "Current repository reference: ${{ github.ref }}"
+
+      # Runs a set of commands using the runners shell
+      - name: List files in the repository
+        run: |
+          echo "Listing files in the repository root:"
+          ls -a
